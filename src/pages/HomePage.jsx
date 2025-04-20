@@ -29,12 +29,6 @@ const HomePage = () => {
                 >
                   Verifikasi Sertifikat
                 </Link>
-                <Link
-                  to="/login"
-                  className="bg-transparent border-2 border-white px-6 py-3 rounded-md font-medium hover:bg-white hover:text-[#4472C4] transition"
-                >
-                  Login Admin
-                </Link>
               </div>
             </div>
           </div>
