@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/certificates';
+const API_URL = 'https://sertifikat-backend.onrender.com/api/certificates';
 
 const useCertificateStore = create((set, get) => ({
   certificates: [],
