@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { QRCodeCanvas } from 'qrcode.react';
 
-const API_URL = 'https://sertifikat-backend.onrender.com/api/certificates';
+const API_URL = 'http://localhost:5000/api/certificates';
 
 const VerifyResultPage = () => {
   const { barcode } = useParams();
