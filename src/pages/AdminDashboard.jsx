@@ -44,7 +44,7 @@ const DashboardPage = () => {
   
   const confirmDelete = async () => {
     if (certificateToDelete) {
-      await deleteCertificate(certificateToDelete._id);
+      await deleteCertificate(certificateToDelete);
       setShowDeleteModal(false);
       setCertificateToDelete(null);
     }
