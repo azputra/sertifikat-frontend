@@ -16,7 +16,7 @@ const ProtectedRoute = ({ children }) => {
   const { user } = useAuthStore();
   
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/admin/login" replace />;
   }
   
   return children;
@@ -31,7 +31,7 @@ function App() {
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
+            <Route path="/admin/login" element={<LoginPage />} />
             <Route path="/verify" element={<VerifyPage />} />
             <Route path="/verify/:barcode" element={<VerifyResultPage />} />
             

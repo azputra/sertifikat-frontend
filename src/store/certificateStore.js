@@ -23,7 +23,7 @@ const useCertificateStore = create((set, get) => ({
   createCertificate: async (certificateData) => {
     try {
       set({ isLoading: true, error: null });
-      
+      console.log(certificateData, 'di dalam')
       const { data } = await axios.post(
         API_URL, 
         certificateData, 

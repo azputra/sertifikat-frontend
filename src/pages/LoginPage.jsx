@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import useAuthStore from '../store/authStore';
@@ -8,6 +8,14 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const { login, loading, error } = useAuthStore();
   const navigate = useNavigate();
+  const { user } = useAuthStore();
+
+  useEffect(() => {
+    if (user) {
+      navigate('/admin/dashboard');
+      return;
+    }
+  }, [navigate]);  
 
   const handleSubmit = async (e) => {
     e.preventDefault();

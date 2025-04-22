@@ -34,7 +34,7 @@ const DashboardPage = () => {
   
   useEffect(() => {
     if (!user) {
-      navigate('/login');
+      navigate('/admin/login');
       return;
     }
     
@@ -109,6 +109,7 @@ const DashboardPage = () => {
   const handleSubmitCreate = async (e) => {
     e.preventDefault();
     try {
+      console.log(formData)
       await createCertificate(formData);
       setShowCreateModal(false);
     } catch (error) {
