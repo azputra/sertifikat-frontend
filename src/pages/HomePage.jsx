@@ -22,14 +22,14 @@ const HomePage = () => {
               <p className="text-xl mb-8">
                 Buat, verifikasi, dan kelola sertifikat digital dengan teknologi barcode untuk keamanan yang terjamin.
               </p>
-              <div className="flex flex-col sm:flex-row justify-center gap-4">
+              {/* <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Link
                   to="/verify"
                   className="bg-[#5FAD41] border-2 border-[#5FAD41] px-6 py-3 rounded-md font-medium hover:bg-[#4c8a34] hover:border-[#4c8a34] transition"
                 >
                   Verifikasi Sertifikat
                 </Link>
-              </div>
+              </div> */}
             </div>
           </div>
           

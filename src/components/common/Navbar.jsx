@@ -32,7 +32,7 @@ const Navbar = () => {
           {/* Main Navigation */}
           <div className="hidden md:flex space-x-6">
             <Link to="/" className="font-bold text-green-400">Branda</Link>
-            <Link to="/verify" className="text-gray-300 hover:text-green-400">Verifikasi</Link>
+            {/* <Link to="/verify" className="text-gray-300 hover:text-green-400">Verifikasi</Link> */}
             {isAdmin && (
               <Link to="/admin/dashboard" className="text-gray-300 hover:text-green-400">
                 Admin Dashboard

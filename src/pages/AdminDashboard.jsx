@@ -3,12 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../store/authStore';
 import useCertificateStore from '../store/certificateStore';
 import Modal from '../components/Modal'; // Assuming you have a Modal component
+import axios from 'axios';
+
+const API_URL = 'https://sertifikat-backend.onrender.com/api/certificates';
 
 const DashboardPage = () => {
   const { user } = useAuthStore();
   const { certificates, getCertificates, deleteCertificate, createCertificate, updateCertificate, isLoading, error } = useCertificateStore();
   const navigate = useNavigate();
   
+  const [downloadingId, setDownloadingId] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
@@ -119,6 +123,39 @@ const DashboardPage = () => {
       setShowEditModal(false);
     } catch (error) {
       console.error('Error updating certificate:', error);
+    }
+  };
+
+  const handleDownload = async (certificate) => {
+    if (!certificate) return;
+    
+    try {
+      setDownloadingId(certificate._id);
+      
+      const response = await axios.post(`${API_URL}/generate-pdf`, {
+        certificateData: certificate,
+        barcode: certificate.barcode
+      }, {
+        responseType: 'blob'
+      });
+      
+      const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+      const pdfUrl = window.URL.createObjectURL(pdfBlob);
+      
+      const a = document.createElement('a');
+      a.href = pdfUrl;
+      a.download = `SECUONE_AIOT_Certificate_${certificate.licenseNumber}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      
+      window.URL.revokeObjectURL(pdfUrl);
+      document.body.removeChild(a);
+      
+      setDownloadingId(null);
+    } catch (err) {
+      console.error('Error generating PDF:', err);
+      setDownloadingId(null);
+      alert('Failed to generate certificate PDF. Please try again.');
     }
   };
   
@@ -243,6 +280,17 @@ const DashboardPage = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
                       <div className="flex space-x-2 justify-center">
+                      <button
+                        onClick={() => handleDownload(certificate)}
+                        disabled={downloadingId === certificate._id}
+                        className={`${
+                          downloadingId === certificate._id 
+                            ? 'bg-gray-400' 
+                            : 'bg-[#4472C4] hover:bg-[#385da2]'
+                        } text-white cursor-pointer p-2 rounded transition`}
+                      >
+                        {downloadingId === certificate._id ? 'Loading..' : 'Download'}
+                      </button>
                         <button
                           onClick={() => handleView(certificate)}
                           className="bg-[#4472C4] hover:bg-[#385da2] text-white cursor-pointer p-2 rounded transition"
