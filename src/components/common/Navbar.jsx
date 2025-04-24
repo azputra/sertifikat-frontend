@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import useAuthStore from '../../store/authStore';
 import logo from '../../assets/logo-secuone.png';
+import keyLogo from '../../assets/key-logo.png';
 
 const Navbar = () => {
   const { user, logout } = useAuthStore();
@@ -40,10 +41,15 @@ const Navbar = () => {
     <nav className="bg-white shadow-md">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo */}
-        <Link to="/" className="flex items-center">
-          <img src={logo} alt="SecuOne Logo" className="h-8" />
-        </Link>
-        
+          <Link to="/" className="flex items-center">
+            <img src={keyLogo} alt="keyLogo" className="h-8" />
+          </Link>
+        {/* {isAdminRoute ? (
+        ) : (
+          <Link to="/" className="flex items-center">
+            <img src={logo} alt="SecuOne Logo" className="h-8" />
+          </Link>
+        )} */}
         {/* Navigation Links - positioned at the right */}
         <div className="flex items-center">
           {isAdminRoute ? (

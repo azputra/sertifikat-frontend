@@ -1,8 +1,10 @@
+// DashboardPage.js - Full Code
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../store/authStore';
 import useCertificateStore from '../store/certificateStore';
-import Modal from '../components/Modal'; // Assuming you have a Modal component
+import Modal from '../components/Modal';
 import axios from 'axios';
 
 const API_URL = 'https://sertifikat-backend.onrender.com/api/certificates';
@@ -27,10 +29,14 @@ const DashboardPage = () => {
     component: '',
     skuNumber: '',
     quantity: 1,
-    isValid: true
+    isValid: true,
+    licenseNumber: '' // Added field
   });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [certificateToDelete, setCertificateToDelete] = useState(null);
+  
+  // Helper function to check if user is admin
+  const isAdmin = user?.isAdmin;
   
   useEffect(() => {
     if (!user) {
@@ -85,7 +91,8 @@ const DashboardPage = () => {
       component: certificate.component,
       skuNumber: certificate.skuNumber,
       quantity: certificate.quantity,
-      isValid: certificate.isValid
+      isValid: certificate.isValid,
+      licenseNumber: certificate.licenseNumber // Added field
     });
     setShowEditModal(true);
   };
@@ -101,7 +108,8 @@ const DashboardPage = () => {
       component: '',
       skuNumber: '',
       quantity: 1,
-      isValid: true
+      isValid: true,
+      licenseNumber: '' // Added field
     });
     setShowCreateModal(true);
   };
@@ -109,7 +117,6 @@ const DashboardPage = () => {
   const handleSubmitCreate = async (e) => {
     e.preventDefault();
     try {
-      console.log(formData)
       await createCertificate(formData);
       setShowCreateModal(false);
     } catch (error) {
@@ -173,16 +180,23 @@ const DashboardPage = () => {
             <h1 className="text-4xl font-bold text-[#5FAD41] mb-1">SECUONE</h1>
             <p className="text-[#335C81] text-sm">TAKE SECURITY SERIOUSLY</p>
             <h2 className="text-2xl font-semibold text-[#4472C4] mt-2">Certificate Dashboard</h2>
+            {/* Display user role */}
+            <p className="text-sm text-gray-600 mt-1">
+              Logged in as: {user?.username} ({isAdmin ? 'Admin' : 'Supervisor'})
+            </p>
           </div>
-          <button
-            onClick={handleCreate}
-            className="bg-[#5FAD41] text-white px-6 py-3 rounded-md hover:bg-[#4c8a34] transition flex items-center"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
-            </svg>
-            Create New Certificate
-          </button>
+          {/* Only show create button for admin users */}
+          {isAdmin && (
+            <button
+              onClick={handleCreate}
+              className="bg-[#5FAD41] text-white px-6 py-3 rounded-md hover:bg-[#4c8a34] transition flex items-center"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+              </svg>
+              Create New Certificate
+            </button>
+          )}
         </div>
         
         {error && (
@@ -202,15 +216,17 @@ const DashboardPage = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             <p className="text-gray-700 mb-4">No certificates found.</p>
-            <button
-              onClick={handleCreate}
-              className="bg-[#5FAD41] text-white px-5 py-2 rounded-md hover:bg-[#4c8a34] transition inline-flex items-center"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
-              </svg>
-              Create your first certificate
-            </button>
+            {isAdmin && (
+              <button
+                onClick={handleCreate}
+                className="bg-[#5FAD41] text-white px-5 py-2 rounded-md hover:bg-[#4c8a34] transition inline-flex items-center"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+                </svg>
+                Create your first certificate
+              </button>
+            )}
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-x-auto">
@@ -281,35 +297,40 @@ const DashboardPage = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
                       <div className="flex space-x-2 justify-center">
-                      <button
-                        onClick={() => handleDownload(certificate)}
-                        disabled={downloadingId === certificate._id}
-                        className={`${
-                          downloadingId === certificate._id 
-                            ? 'bg-gray-400' 
-                            : 'bg-[#4472C4] hover:bg-[#385da2]'
-                        } text-white cursor-pointer p-2 rounded transition`}
-                      >
-                        {downloadingId === certificate._id ? 'Loading..' : 'Download'}
-                      </button>
+                        <button
+                          onClick={() => handleDownload(certificate)}
+                          disabled={downloadingId === certificate._id}
+                          className={`${
+                            downloadingId === certificate._id 
+                              ? 'bg-gray-400' 
+                              : 'bg-[#4472C4] hover:bg-[#385da2]'
+                          } text-white cursor-pointer p-2 rounded transition`}
+                        >
+                          {downloadingId === certificate._id ? 'Loading..' : 'Download'}
+                        </button>
                         <button
                           onClick={() => handleView(certificate)}
                           className="bg-[#4472C4] hover:bg-[#385da2] text-white cursor-pointer p-2 rounded transition"
                         >
                           View
                         </button>
-                        <button
-                          onClick={() => handleEdit(certificate)}
-                          className="bg-[#5FAD41] hover:bg-[#4c8a34] text-white cursor-pointer p-2 rounded transition"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => handleDelete(certificate._id)}
-                          className="bg-red-600 hover:bg-red-700 text-white cursor-pointer p-2 rounded transition"
-                        >
-                          Delete
-                        </button>
+                        {/* Only show edit and delete buttons for admin users */}
+                        {isAdmin && (
+                          <>
+                            <button
+                              onClick={() => handleEdit(certificate)}
+                              className="bg-[#5FAD41] hover:bg-[#4c8a34] text-white cursor-pointer p-2 rounded transition"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDelete(certificate._id)}
+                              className="bg-red-600 hover:bg-red-700 text-white cursor-pointer p-2 rounded transition"
+                            >
+                              Delete
+                            </button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -327,14 +348,27 @@ const DashboardPage = () => {
         </div>
       </div>
       
-      {/* Create Certificate Modal */}
-      {showCreateModal && (
+      {/* Create Certificate Modal - only render if user is admin */}
+      {isAdmin && showCreateModal && (
         <Modal title={
           <div className="text-center">
             <h3 className="text-xl font-bold text-white">Create New Certificate</h3>
           </div>
         } onClose={() => setShowCreateModal(false)}>
           <form onSubmit={handleSubmitCreate} className="space-y-4 mt-4">
+            {/* Added License Number field */}
+            <div>
+              <label className="block text-sm font-medium text-[#4472C4]">License Number</label>
+              <input
+                type="text"
+                name="licenseNumber"
+                value={formData.licenseNumber}
+                onChange={handleInputChange}
+                placeholder=""
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-2 focus:ring-[#5FAD41] focus:border-transparent"
+              />
+            </div>
+            
             <div>
               <label className="block text-sm font-medium text-[#4472C4]">Program Name</label>
               <input
@@ -479,14 +513,25 @@ const DashboardPage = () => {
         </Modal>
       )}
       
-      {/* Edit Certificate Modal */}
-      {showEditModal && currentCertificate && (
+      {/* Edit Certificate Modal - only render if user is admin */}
+      {isAdmin && showEditModal && currentCertificate && (
         <Modal title={
           <div className="text-center">
             <h3 className="text-xl font-bold text-white">Edit Certificate</h3>
           </div>
         } onClose={() => setShowEditModal(false)}>
           <form onSubmit={handleSubmitEdit} className="space-y-4 mt-4">
+            <div>
+              <label className="block text-sm font-medium text-[#4472C4]">License Number</label>
+              <input
+                type="text"
+                name="licenseNumber"
+                value={formData.licenseNumber}
+                onChange={handleInputChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-gray-100"
+              />
+            </div>
+            
             <div>
               <label className="block text-sm font-medium text-[#4472C4]">Program Name</label>
               <input
@@ -681,7 +726,8 @@ const DashboardPage = () => {
                 <p className="mt-1 text-sm text-gray-900">{currentCertificate.quantity}</p>
               </div>
               <div className="border-l-4 border-[#5FAD41] pl-3">
-                <h3 className="text-sm font-medium text-[#4472C4]">Status</h3><p className="mt-1 text-sm text-gray-900">
+                <h3 className="text-sm font-medium text-[#4472C4]">Status</h3>
+                <p className="mt-1 text-sm text-gray-900">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                     currentCertificate.isValid 
                       ? 'bg-[#e8f5e9] text-[#2e7d32]' 
@@ -713,8 +759,8 @@ const DashboardPage = () => {
         </Modal>
       )}
       
-      {/* Delete Confirmation Modal */}
-      {showDeleteModal && (
+      {/* Delete Confirmation Modal - only render if user is admin */}
+      {isAdmin && showDeleteModal && (
         <Modal title={
           <div className="text-center">
             <h3 className="text-xl font-bold text-white">Confirm Delete</h3>

@@ -1,7 +1,7 @@
 // Slideshow.jsx
 import React, { useState, useEffect } from 'react';
 import slideshow1 from '../assets/slideshow1.png';
-
+import logo from '../assets/logo-secuone.png';
 const Slideshow = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   
@@ -64,6 +64,7 @@ const Slideshow = () => {
         <div className="absolute inset-0 bg-black opacity-70 flex items-center">
           <div className="container mx-auto px-4">
             <div className="max-w-2xl ml-16">
+              <img src={logo} alt="SecuOne Logo" className="h-16" />
               <h1 className="text-5xl font-bold text-white mb-4 leading-tight">
                 {slides[currentSlide].title.split(' FOR ')[0]}<br />
                 FOR {slides[currentSlide].title.split(' FOR ')[1]}
