@@ -37,6 +37,8 @@ const DashboardPage = () => {
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+
+  const [isLoadingButton, setIsLoadingButton] = useState(false);
   
   // Helper function to check if user is admin
   const isAdmin = user?.isAdmin;
@@ -128,20 +130,26 @@ const DashboardPage = () => {
   
   const handleSubmitCreate = async (e) => {
     e.preventDefault();
+    setIsLoadingButton(true)
     try {
       await createCertificate(formData);
       setShowCreateModal(false);
+      setIsLoadingButton(false)
     } catch (error) {
+      setIsLoadingButton(false)
       console.error('Error creating certificate:', error);
     }
   };
   
   const handleSubmitEdit = async (e) => {
     e.preventDefault();
+    setIsLoadingButton(true)
     try {
       await updateCertificate(currentCertificate._id, formData);
       setShowEditModal(false);
+      setIsLoadingButton(false)
     } catch (error) {
+      setIsLoadingButton(false)
       console.error('Error updating certificate:', error);
     }
   };
@@ -535,9 +543,24 @@ const DashboardPage = () => {
               </button>
               <button
                 type="submit"
-                className="bg-[#5FAD41] text-white px-4 py-2 rounded-md hover:bg-[#4c8a34] transition"
+                className={`${
+                  isLoadingButton 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-[#5FAD41] hover:bg-[#4c8a34]'
+                } text-white px-4 py-2 rounded-md transition flex items-center`}
+                disabled={isLoadingButton}
               >
-                Create Certificate
+                {isLoadingButton ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Creating...
+                  </>
+                ) : (
+                  'Create Certificate'
+                )}
               </button>
             </div>
           </form>
@@ -685,9 +708,24 @@ const DashboardPage = () => {
               </button>
               <button
                 type="submit"
-                className="bg-[#4472C4] text-white px-4 py-2 rounded-md hover:bg-[#385da2] transition"
+                className={`${
+                  isLoadingButton 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-[#4472C4] hover:bg-[#385da2]'
+                } text-white px-4 py-2 rounded-md transition flex items-center`}
+                disabled={isLoadingButton}
               >
-                Update Certificate
+                {isLoadingButton ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Updating...
+                  </>
+                ) : (
+                  'Update Certificate'
+                )}
               </button>
             </div>
           </form>
