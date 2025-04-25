@@ -6,6 +6,7 @@ import useAuthStore from '../store/authStore';
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { login, loading, error } = useAuthStore();
   const navigate = useNavigate();
   const { user } = useAuthStore();
@@ -19,13 +20,15 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    setIsLoading(true); 
     try {
       await login(username, password);
       toast.success('Login berhasil!');
       navigate('/admin/dashboard');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Login gagal');
+    } finally {
+      setIsLoading(false); // Set loading false
     }
   };
 
@@ -87,7 +90,7 @@ const LoginPage = () => {
               disabled={loading}
               className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#5FAD41] hover:bg-[#4c8a34] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5FAD41] transition"
             >
-              {loading ? (
+              {isLoading ? (
                 <span className="flex items-center">
                   <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
