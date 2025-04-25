@@ -261,19 +261,19 @@ const DashboardPage = () => {
                 <thead>
                   <tr className="bg-[#4472C4] text-white">
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                      Component Description
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                       License Number
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                      End User
+                      Customer Name
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                       Program
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                       Issue Date
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                      SKU Number
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                       Quantity
@@ -289,7 +289,10 @@ const DashboardPage = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {currentCertificates.map((certificate) => (
                     <tr key={certificate._id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {truncateText(certificate.component, 25)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">
                         {certificate.licenseNumber}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -300,9 +303,6 @@ const DashboardPage = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {formatDate(certificate.issueDate)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {certificate.skuNumber}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {certificate.quantity}
