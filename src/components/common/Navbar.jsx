@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import useAuthStore from '../../store/authStore';
-import logo from '../../assets/logo-secuone.png';
 import keyLogo from '../../assets/key-logo.png';
 
 const Navbar = () => {

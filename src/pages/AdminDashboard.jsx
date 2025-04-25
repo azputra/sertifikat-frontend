@@ -1,4 +1,4 @@
-// DashboardPage.js - Full Code
+// DashboardPage.js - Updated Code
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -24,16 +24,19 @@ const DashboardPage = () => {
     issueDate: '',
     endUserName: '',
     endUserId: '',
-    shipToId: '',
     address: '',
     component: '',
+    licenseNumber: '', // Moved after component
     skuNumber: '',
     quantity: 1,
-    isValid: true,
-    licenseNumber: '' // Added field
+    isValid: true
   });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [certificateToDelete, setCertificateToDelete] = useState(null);
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
   
   // Helper function to check if user is admin
   const isAdmin = user?.isAdmin;
@@ -46,6 +49,17 @@ const DashboardPage = () => {
     
     getCertificates();
   }, [user, navigate, getCertificates]);
+  
+  // Get current certificates for pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentCertificates = certificates.slice(indexOfFirstItem, indexOfLastItem);
+  
+  // Calculate total pages
+  const totalPages = Math.ceil(certificates.length / itemsPerPage);
+  
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
   
   const handleDelete = (certificate) => {
     setCertificateToDelete(certificate);
@@ -86,13 +100,12 @@ const DashboardPage = () => {
       issueDate: new Date(certificate.issueDate).toISOString().split('T')[0],
       endUserName: certificate.endUserName,
       endUserId: certificate.endUserId,
-      shipToId: certificate.shipToId,
       address: certificate.address,
       component: certificate.component,
+      licenseNumber: certificate.licenseNumber,
       skuNumber: certificate.skuNumber,
       quantity: certificate.quantity,
-      isValid: certificate.isValid,
-      licenseNumber: certificate.licenseNumber // Added field
+      isValid: certificate.isValid
     });
     setShowEditModal(true);
   };
@@ -103,13 +116,12 @@ const DashboardPage = () => {
       issueDate: new Date().toISOString().split('T')[0],
       endUserName: '',
       endUserId: '',
-      shipToId: '',
       address: '',
       component: '',
+      licenseNumber: '',
       skuNumber: '',
       quantity: 1,
-      isValid: true,
-      licenseNumber: '' // Added field
+      isValid: true
     });
     setShowCreateModal(true);
   };
@@ -165,6 +177,12 @@ const DashboardPage = () => {
       setDownloadingId(null);
       alert('Failed to generate certificate PDF. Please try again.');
     }
+  };
+  
+  // Function to truncate long text with ellipsis
+  const truncateText = (text, maxLength = 30) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '...';
   };
   
   return (
@@ -229,115 +247,143 @@ const DashboardPage = () => {
             )}
           </div>
         ) : (
-          <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead>
-                <tr className="bg-[#4472C4] text-white">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    License Number
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    End User
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Program
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Issue Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Component Description
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    SKU Number
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Quantity
-                  </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {certificates.map((certificate) => (
-                  <tr key={certificate._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {certificate.licenseNumber}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {certificate.endUserName}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {certificate.programName}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {formatDate(certificate.issueDate)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {certificate.component}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {certificate.skuNumber}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {certificate.quantity}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        certificate.isValid 
-                          ? 'bg-[#e8f5e9] text-[#2e7d32]' 
-                          : 'bg-red-100 text-red-800'
-                      }`}>
-                        {certificate.isValid ? 'Valid' : 'Invalid'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
-                      <div className="flex space-x-2 justify-center">
-                        <button
-                          onClick={() => handleDownload(certificate)}
-                          disabled={downloadingId === certificate._id}
-                          className={`${
-                            downloadingId === certificate._id 
-                              ? 'bg-gray-400' 
-                              : 'bg-[#4472C4] hover:bg-[#385da2]'
-                          } text-white cursor-pointer p-2 rounded transition`}
-                        >
-                          {downloadingId === certificate._id ? 'Loading..' : 'Download'}
-                        </button>
-                        <button
-                          onClick={() => handleView(certificate)}
-                          className="bg-[#4472C4] hover:bg-[#385da2] text-white cursor-pointer p-2 rounded transition"
-                        >
-                          View
-                        </button>
-                        {/* Only show edit and delete buttons for admin users */}
-                        {isAdmin && (
-                          <>
+          <>
+            <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead>
+                  <tr className="bg-[#4472C4] text-white">
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                      License Number
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                      End User
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                      Program
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                      Issue Date
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                      SKU Number
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                      Quantity
+                    </th>
+                    <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {currentCertificates.map((certificate) => (
+                    <tr key={certificate._id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        {certificate.licenseNumber}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {certificate.endUserName}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500" title={certificate.programName}>
+                        {truncateText(certificate.programName, 25)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {formatDate(certificate.issueDate)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {certificate.skuNumber}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {certificate.quantity}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
+                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          certificate.isValid 
+                            ? 'bg-[#e8f5e9] text-[#2e7d32]' 
+                            : 'bg-red-100 text-red-800'
+                        }`}>
+                          {certificate.isValid ? 'Valid' : 'Invalid'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-center">
+                        <div className="flex space-x-2 justify-center">
+                          <button
+                            onClick={() => handleDownload(certificate)}
+                            disabled={downloadingId === certificate._id}
+                            className={`${
+                              downloadingId === certificate._id 
+                                ? 'bg-gray-400' 
+                                : 'bg-[#4472C4] hover:bg-[#385da2]'
+                            } text-white cursor-pointer p-2 rounded transition`}
+                          >
+                            {downloadingId === certificate._id ? 'Loading..' : 'Download'}
+                          </button>
+                          <button
+                            onClick={() => handleView(certificate)}
+                            className="bg-[#4472C4] hover:bg-[#385da2] text-white cursor-pointer p-2 rounded transition"
+                          >
+                            View
+                          </button>
+                          {/* Edit button for admin users */}
+                          {isAdmin && (
                             <button
                               onClick={() => handleEdit(certificate)}
                               className="bg-[#5FAD41] hover:bg-[#4c8a34] text-white cursor-pointer p-2 rounded transition"
                             >
                               Edit
                             </button>
+                          )}
+                          {/* Delete button for supervisor users */}
+                          {!isAdmin && (
                             <button
                               onClick={() => handleDelete(certificate._id)}
                               className="bg-red-600 hover:bg-red-700 text-white cursor-pointer p-2 rounded transition"
                             >
                               Delete
                             </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex justify-end items-center space-x-2 mt-6">
+                <button
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className={`px-3 py-1 rounded-md ${currentPage === 1 ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-[#4472C4] text-white hover:bg-[#385da2]'}`}
+                >
+                  Previous
+                </button>
+                
+                {[...Array(totalPages)].map((_, index) => (
+                  <button
+                    key={index + 1}
+                    onClick={() => paginate(index + 1)}
+                    className={`px-3 py-1 rounded-md ${currentPage === index + 1 ? 'bg-[#5FAD41] text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                  >
+                    {index + 1}
+                  </button>
                 ))}
-              </tbody>
-            </table>
-          </div>
+                
+                <button
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className={`px-3 py-1 rounded-md ${currentPage === totalPages ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-[#4472C4] text-white hover:bg-[#385da2]'}`}
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
         )}
         
         {/* Decorative elements */}
@@ -356,19 +402,6 @@ const DashboardPage = () => {
           </div>
         } onClose={() => setShowCreateModal(false)}>
           <form onSubmit={handleSubmitCreate} className="space-y-4 mt-4">
-            {/* Added License Number field */}
-            <div>
-              <label className="block text-sm font-medium text-[#4472C4]">License Number</label>
-              <input
-                type="text"
-                name="licenseNumber"
-                value={formData.licenseNumber}
-                onChange={handleInputChange}
-                placeholder=""
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-2 focus:ring-[#5FAD41] focus:border-transparent"
-              />
-            </div>
-            
             <div>
               <label className="block text-sm font-medium text-[#4472C4]">Program Name</label>
               <input
@@ -380,22 +413,22 @@ const DashboardPage = () => {
                 required
               />
             </div>
+
+            <div className='w-full'>
+              <label className="block text-sm font-medium text-[#4472C4]">Issue Date</label>
+              <input
+                type="date"
+                name="issueDate"
+                value={formData.issueDate}
+                onChange={handleInputChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-2 focus:ring-[#5FAD41] focus:border-transparent"
+                required
+              />
+            </div>
             
             <div className='flex gap-2'>
               <div className='w-full'>
-                <label className="block text-sm font-medium text-[#4472C4]">Issue Date</label>
-                <input
-                  type="date"
-                  name="issueDate"
-                  value={formData.issueDate}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-2 focus:ring-[#5FAD41] focus:border-transparent"
-                  required
-                />
-              </div>
-              
-              <div className='w-full'>
-                <label className="block text-sm font-medium text-[#4472C4]">End User Name</label>
+                <label className="block text-sm font-medium text-[#4472C4]">Customer Name</label>
                 <input
                   type="text"
                   name="endUserName"
@@ -405,27 +438,12 @@ const DashboardPage = () => {
                   required
                 />
               </div>
-            </div>
-            
-            <div className='flex gap-2'>
               <div className='w-full'>
-                <label className="block text-sm font-medium text-[#4472C4]">End User ID</label>
+                <label className="block text-sm font-medium text-[#4472C4]">Customer ID</label>
                 <input
                   type="text"
                   name="endUserId"
                   value={formData.endUserId}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-2 focus:ring-[#5FAD41] focus:border-transparent"
-                  required
-                />
-              </div>
-              
-              <div className='w-full'>
-                <label className="block text-sm font-medium text-[#4472C4]">Ship To ID</label>
-                <input
-                  type="text"
-                  name="shipToId"
-                  value={formData.shipToId}
                   onChange={handleInputChange}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-2 focus:ring-[#5FAD41] focus:border-transparent"
                   required
@@ -453,6 +471,19 @@ const DashboardPage = () => {
                 onChange={handleInputChange}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-2 focus:ring-[#5FAD41] focus:border-transparent"
                 required
+              />
+            </div>
+            
+            {/* License Number moved after Component Description */}
+            <div>
+              <label className="block text-sm font-medium text-[#4472C4]">License Number</label>
+              <input
+                type="text"
+                name="licenseNumber"
+                value={formData.licenseNumber}
+                onChange={handleInputChange}
+                placeholder=""
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-2 focus:ring-[#5FAD41] focus:border-transparent"
               />
             </div>
             
@@ -522,17 +553,6 @@ const DashboardPage = () => {
         } onClose={() => setShowEditModal(false)}>
           <form onSubmit={handleSubmitEdit} className="space-y-4 mt-4">
             <div>
-              <label className="block text-sm font-medium text-[#4472C4]">License Number</label>
-              <input
-                type="text"
-                name="licenseNumber"
-                value={formData.licenseNumber}
-                onChange={handleInputChange}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-gray-100"
-              />
-            </div>
-            
-            <div>
               <label className="block text-sm font-medium text-[#4472C4]">Program Name</label>
               <input
                 type="text"
@@ -558,7 +578,7 @@ const DashboardPage = () => {
               </div>
               
               <div className='w-full'>
-                <label className="block text-sm font-medium text-[#4472C4]">End User Name</label>
+                <label className="block text-sm font-medium text-[#4472C4]">Customer Name</label>
                 <input
                   type="text"
                   name="endUserName"
@@ -570,30 +590,16 @@ const DashboardPage = () => {
               </div>
             </div>
             
-            <div className='flex gap-2'>
-              <div className='w-full'>
-                <label className="block text-sm font-medium text-[#4472C4]">End User ID</label>
-                <input
-                  type="text"
-                  name="endUserId"
-                  value={formData.endUserId}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-2 focus:ring-[#5FAD41] focus:border-transparent"
-                  required
-                />
-              </div>
-              
-              <div className='w-full'>
-                <label className="block text-sm font-medium text-[#4472C4]">Ship To ID</label>
-                <input
-                  type="text"
-                  name="shipToId"
-                  value={formData.shipToId}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-2 focus:ring-[#5FAD41] focus:border-transparent"
-                  required
-                />
-              </div>
+            <div>
+              <label className="block text-sm font-medium text-[#4472C4]">Customer ID</label>
+              <input
+                type="text"
+                name="endUserId"
+                value={formData.endUserId}
+                onChange={handleInputChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-2 focus:ring-[#5FAD41] focus:border-transparent"
+                required
+              />
             </div>
             
             <div>
@@ -616,6 +622,18 @@ const DashboardPage = () => {
                 onChange={handleInputChange}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-2 focus:ring-[#5FAD41] focus:border-transparent"
                 required
+              />
+            </div>
+            
+            {/* License Number moved after Component Description */}
+            <div>
+              <label className="block text-sm font-medium text-[#4472C4]">License Number</label>
+              <input
+                type="text"
+                name="licenseNumber"
+                value={formData.licenseNumber}
+                onChange={handleInputChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-gray-100"
               />
             </div>
             
@@ -702,16 +720,12 @@ const DashboardPage = () => {
                 <p className="mt-1 text-sm text-gray-900">{formatDate(currentCertificate.issueDate)}</p>
               </div>
               <div className="border-l-4 border-[#5FAD41] pl-3">
-                <h3 className="text-sm font-medium text-[#4472C4]">End User Name</h3>
+                <h3 className="text-sm font-medium text-[#4472C4]">Customer Name</h3>
                 <p className="mt-1 text-sm text-gray-900">{currentCertificate.endUserName}</p>
               </div>
               <div className="border-l-4 border-[#5FAD41] pl-3">
-                <h3 className="text-sm font-medium text-[#4472C4]">End User ID</h3>
+                <h3 className="text-sm font-medium text-[#4472C4]">Customer ID</h3>
                 <p className="mt-1 text-sm text-gray-900">{currentCertificate.endUserId}</p>
-              </div>
-              <div className="border-l-4 border-[#5FAD41] pl-3">
-                <h3 className="text-sm font-medium text-[#4472C4]">Ship To ID</h3>
-                <p className="mt-1 text-sm text-gray-900">{currentCertificate.shipToId}</p>
               </div>
               <div className="border-l-4 border-[#5FAD41] pl-3">
                 <h3 className="text-sm font-medium text-[#4472C4]">Component Description</h3>
@@ -759,8 +773,8 @@ const DashboardPage = () => {
         </Modal>
       )}
       
-      {/* Delete Confirmation Modal - only render if user is admin */}
-      {isAdmin && showDeleteModal && (
+      {/* Delete Confirmation Modal - only render if user is supervisor */}
+      {!isAdmin && showDeleteModal && (
         <Modal title={
           <div className="text-center">
             <h3 className="text-xl font-bold text-white">Confirm Delete</h3>
