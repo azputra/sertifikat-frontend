@@ -150,7 +150,7 @@ const VerifyResultPage = () => {
                       <p className="text-gray-800">{result.certificateData.licenseNumber}</p>
                     </div>
                     <div className="border-l-4 border-[#5FAD41] pl-3">
-                      <p className="text-[#4472C4] font-semibold">End User:</p>
+                      <p className="text-[#4472C4] font-semibold">Customer Name:</p>
                       <p className="text-gray-800">{result.certificateData.endUserName}</p>
                     </div>
                     <div className="border-l-4 border-[#5FAD41] pl-3">
@@ -158,16 +158,16 @@ const VerifyResultPage = () => {
                       <p className="text-gray-800">{result.certificateData.component}</p>
                     </div>
                     <div className="border-l-4 border-[#5FAD41] pl-3">
-                      <p className="text-[#4472C4] font-semibold">SKU Number:</p>
-                      <p className="text-gray-800">{result.certificateData.skuNumber}</p>
-                    </div>
-                    <div className="border-l-4 border-[#5FAD41] pl-3">
                       <p className="text-[#4472C4] font-semibold">Quantity:</p>
                       <p className="text-gray-800">{result.certificateData.quantity}</p>
                     </div>
-                    <div className="border-l-4 border-[#5FAD41] pl-3">
-                      <p className="text-[#4472C4] font-semibold">Validity:</p>
-                      <p className="text-gray-800">{result.certificateData.validityYears || 2} years from date of BAST</p>
+                    <div className="mt-8 text-sm border-t pt-4 border-[#5FAD41]">
+                      <p><strong className="text-[#4472C4]">Note:</strong></p>
+                      {certificate.notes && (
+                        <pre className="mt-2 whitespace-pre-wrap font-sans">
+                          {certificate.notes}
+                        </pre>
+                      )}
                     </div>
                   </div>
                   

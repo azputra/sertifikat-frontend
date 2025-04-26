@@ -29,7 +29,8 @@ const DashboardPage = () => {
     licenseNumber: '', // Moved after component
     skuNumber: '',
     quantity: 1,
-    isValid: true
+    isValid: true,
+    notes: ''
   });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [certificateToDelete, setCertificateToDelete] = useState(null);
@@ -107,7 +108,8 @@ const DashboardPage = () => {
       licenseNumber: certificate.licenseNumber,
       skuNumber: certificate.skuNumber,
       quantity: certificate.quantity,
-      isValid: certificate.isValid
+      isValid: certificate.isValid,
+      notes: certificate.notes
     });
     setShowEditModal(true);
   };
@@ -123,7 +125,8 @@ const DashboardPage = () => {
       licenseNumber: '',
       skuNumber: '',
       quantity: 1,
-      isValid: true
+      isValid: true,
+      notes: '' 
     });
     setShowCreateModal(true);
   };
@@ -481,6 +484,18 @@ const DashboardPage = () => {
                 required
               />
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-[#4472C4]">Notes</label>
+              <textarea
+                name="notes"
+                value={formData.notes}
+                onChange={handleInputChange}
+                placeholder="* note 1&#10;* note 2"
+                rows="3"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-2 focus:ring-[#5FAD41] focus:border-transparent"
+              />
+            </div>
             
             {/* License Number moved after Component Description */}
             <div>
@@ -495,8 +510,8 @@ const DashboardPage = () => {
               />
             </div>
             
-            <div className='flex gap-2'>
-              <div className='w-full'>
+            {/* <div className='flex gap-2'> */}
+              {/* <div className='w-full'>
                 <label className="block text-sm font-medium text-[#4472C4]">SKU Number</label>
                 <input
                   type="text"
@@ -506,7 +521,7 @@ const DashboardPage = () => {
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-2 focus:ring-[#5FAD41] focus:border-transparent"
                   required
                 />
-              </div>
+              </div> */}
               
               <div className='w-full'>
                 <label className="block text-sm font-medium text-[#4472C4]">Quantity</label>
@@ -520,7 +535,6 @@ const DashboardPage = () => {
                   required
                 />
               </div>
-            </div>
             
             <div className="flex items-center">
               <input
@@ -659,8 +673,20 @@ const DashboardPage = () => {
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-gray-100"
               />
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-[#4472C4]">Notes</label>
+              <textarea
+                name="notes"
+                value={formData.notes}
+                onChange={handleInputChange}
+                placeholder="* note 1&#10;* note 2"
+                rows="3"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-2 focus:ring-[#5FAD41] focus:border-transparent"
+              />
+            </div>
             
-            <div className='flex gap-2'>
+            {/* <div className='flex gap-2'>
               <div className='w-full'>
                 <label className="block text-sm font-medium text-[#4472C4]">SKU Number</label>
                 <input
@@ -671,7 +697,7 @@ const DashboardPage = () => {
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-2 focus:ring-[#5FAD41] focus:border-transparent"
                   required
                 />
-              </div>
+              </div> */}
               
               <div className='w-full'>
                 <label className="block text-sm font-medium text-[#4472C4]">Quantity</label>
@@ -685,7 +711,6 @@ const DashboardPage = () => {
                   required
                 />
               </div>
-            </div>
             
             <div className="flex items-center">
               <input
@@ -769,9 +794,11 @@ const DashboardPage = () => {
                 <h3 className="text-sm font-medium text-[#4472C4]">Component Description</h3>
                 <p className="mt-1 text-sm text-gray-900">{currentCertificate.component}</p>
               </div>
-              <div className="border-l-4 border-[#5FAD41] pl-3">
-                <h3 className="text-sm font-medium text-[#4472C4]">SKU Number</h3>
-                <p className="mt-1 text-sm text-gray-900">{currentCertificate.skuNumber}</p>
+              <div className="col-span-2 border-l-4 border-[#5FAD41] pl-3">
+                <h3 className="text-sm font-medium text-[#4472C4]">Notes</h3>
+                <pre className="mt-1 text-sm text-gray-900 whitespace-pre-wrap font-sans">
+                  {currentCertificate.notes || 'No notes'}
+                </pre>
               </div>
               <div className="border-l-4 border-[#5FAD41] pl-3">
                 <h3 className="text-sm font-medium text-[#4472C4]">Quantity</h3>
