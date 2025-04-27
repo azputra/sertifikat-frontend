@@ -15,7 +15,7 @@ const Modal = ({ children, title, onClose }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
       <div className="relative bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-auto border border-gray-200">
         {/* Header */}
-        <div className="sticky top-0 bg-[#4472C4] z-10 flex justify-between items-center p-4">
+        <div className="sticky top-0 bg-[#4472C4] flex justify-between items-center p-4 z-50">
           {typeof title === 'string' ? (
             <h2 className="text-xl font-semibold text-white">{title}</h2>
           ) : (
