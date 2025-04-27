@@ -793,6 +793,14 @@ const DashboardPage = () => {
                 <p className="mt-1 text-sm text-gray-900">{currentCertificate.endUserId}</p>
               </div>
               <div className="border-l-4 border-[#5FAD41] pl-3">
+                <h3 className="text-sm font-medium text-[#4472C4]">SKU Number</h3>
+                <p className="mt-1 text-sm text-gray-900">{currentCertificate.skuNumber}</p>
+              </div>
+              <div className="border-l-4 border-[#5FAD41] pl-3">
+                <h3 className="text-sm font-medium text-[#4472C4]">Quantity</h3>
+                <p className="mt-1 text-sm text-gray-900">{currentCertificate.quantity}</p>
+              </div>
+              <div className="border-l-4 border-[#5FAD41] pl-3">
                 <h3 className="text-sm font-medium text-[#4472C4]">Component Description</h3>
                 <p className="mt-1 text-sm text-gray-900">{currentCertificate.component}</p>
               </div>
@@ -801,14 +809,6 @@ const DashboardPage = () => {
                 <pre className="mt-1 text-sm text-gray-900 whitespace-pre-wrap font-sans">
                   {currentCertificate.notes || 'No notes'}
                 </pre>
-              </div>
-              <div className="border-l-4 border-[#5FAD41] pl-3">
-                <h3 className="text-sm font-medium text-[#4472C4]">SKU Number</h3>
-                <p className="mt-1 text-sm text-gray-900">{currentCertificate.skuNumber}</p>
-              </div>
-              <div className="border-l-4 border-[#5FAD41] pl-3">
-                <h3 className="text-sm font-medium text-[#4472C4]">Quantity</h3>
-                <p className="mt-1 text-sm text-gray-900">{currentCertificate.quantity}</p>
               </div>
               <div className="border-l-4 border-[#5FAD41] pl-3">
                 <h3 className="text-sm font-medium text-[#4472C4]">Status</h3>
