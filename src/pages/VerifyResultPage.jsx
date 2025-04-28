@@ -13,6 +13,7 @@ const VerifyResultPage = () => {
   const [downloading, setDownloading] = useState(false);
   
   useEffect(() => {
+    console.log(window.location.href)
     const verifyCertificate = async () => {
       try {
         setLoading(true);
@@ -20,7 +21,7 @@ const VerifyResultPage = () => {
         setResult(data);
         setLoading(false);
       } catch (err) {
-        setError('Error verifying certificate. Please try again.');
+        setError('Error verifying certificate. Please try again.', err);
         setLoading(false);
       }
     };
