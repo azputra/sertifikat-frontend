@@ -169,14 +169,6 @@ const VerifyResultPage = () => {
                       <p className="text-[#4472C4] font-semibold">Component:</p>
                       <p className="text-gray-800">{result.certificateData.component}</p>
                     </div>
-                    <div className="mt-8 text-sm border-t pt-4 border-[#5FAD41]">
-                      <p><strong className="text-[#4472C4]">Note:</strong></p>
-                      {result.certificateData.notes && (
-                        <pre className="mt-2 whitespace-pre-wrap font-sans">
-                          {result.certificateData.notes}
-                        </pre>
-                      )}
-                    </div>
                     <div className="border-l-4 border-[#5FAD41] pl-3">
                       <p className="text-[#4472C4] font-semibold">SKU Number:</p>
                       <p className="text-gray-800">{result.certificateData.skuNumber}</p>
@@ -184,6 +176,14 @@ const VerifyResultPage = () => {
                     <div className="border-l-4 border-[#5FAD41] pl-3">
                       <p className="text-[#4472C4] font-semibold">Quantity:</p>
                       <p className="text-gray-800">{result.certificateData.quantity}</p>
+                    </div>
+                    <div className="border-l-4 border-[#5FAD41] pl-3">
+                      <p><strong className="text-[#4472C4] font-semibold">Note:</strong></p>
+                      {result.certificateData.notes && (
+                        <pre className="mt-2 whitespace-pre-wrap font-sans">
+                          {result.certificateData.notes}
+                        </pre>
+                      )}
                     </div>
                   </div>
                   
