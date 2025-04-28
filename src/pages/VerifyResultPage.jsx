@@ -35,6 +35,7 @@ const VerifyResultPage = () => {
     
     if (isLink1) {
       const barcode = currentURL.split('/verify/')[1];
+      console.log(`http://www.secuoneindonesia.com/verify/${barcode}`)
       window.location.href = `http://www.secuoneindonesia.com/verify/${barcode}`;
     }
   }, [location]);
@@ -170,9 +171,9 @@ const VerifyResultPage = () => {
                     </div>
                     <div className="mt-8 text-sm border-t pt-4 border-[#5FAD41]">
                       <p><strong className="text-[#4472C4]">Note:</strong></p>
-                      {certificate.notes && (
+                      {result.certificateData.notes && (
                         <pre className="mt-2 whitespace-pre-wrap font-sans">
-                          {certificate.notes}
+                          {result.certificateData.notes}
                         </pre>
                       )}
                     </div>
