@@ -21,19 +21,31 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
-// Redirect Component untuk mengalihkan ke domain lain
+// Versi baru dari komponen RedirectToSecuone
 const RedirectToSecuone = () => {
   const { barcode } = useParams();
+  const [redirecting, setRedirecting] = React.useState(false);
   
   React.useEffect(() => {
-    // Periksa apakah URL saat ini adalah secuone.netlify.app
     const currentHostname = window.location.hostname;
     if (currentHostname.includes('netlify')) {
-      window.location.href = `http://www.secuoneindonesia.com/verify/${barcode}`;
+      setRedirecting(true);
+      // Tambahkan delay kecil untuk pastikan state terupdate
+      setTimeout(() => {
+        window.location.href = `http://www.secuoneindonesia.com/verify/${barcode}`;
+      }, 50);
     }
   }, [barcode]);
   
-  // Tampilkan loading atau render VerifyResultPage jika bukan di netlify
+  // Jika sedang redirect, tampilkan loading screen
+  if (redirecting) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex justify-center items-center">
+      </div>
+    );
+  }
+  
+  // Hanya render VerifyResultPage jika tidak sedang redirect
   return <VerifyResultPage />;
 };
 
@@ -48,10 +60,10 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/admin/login" element={<LoginPage />} />
             <Route path="/verify" element={<VerifyPage />} />
-            {/* Gunakan komponen redirect khusus */}
+            {/* Gunakan komponen redirect yang sudah diperbarui */}
             <Route path="/verify/:barcode" element={<RedirectToSecuone />} />
 
-      <Route path="/admin/dashboard" element={
+            <Route path="/admin/dashboard" element={
               <ProtectedRoute>
                 <AdminDashboard />
               </ProtectedRoute>
