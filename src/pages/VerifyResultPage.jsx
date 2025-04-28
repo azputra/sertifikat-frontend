@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { QRCodeCanvas } from 'qrcode.react';
 
@@ -7,6 +7,7 @@ const API_URL = 'https://sertifikat-backend.onrender.com/api/certificates';
 
 const VerifyResultPage = () => {
   const { barcode } = useParams();
+  const location = useLocation();
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -27,6 +28,16 @@ const VerifyResultPage = () => {
     
     verifyCertificate();
   }, [barcode]);
+
+  useEffect(() => {
+    const currentURL = window.location.href;
+    const isLink1 = currentURL.includes('secuone.netlify.app/verify/');
+    
+    if (isLink1) {
+      const barcode = currentURL.split('/verify/')[1];
+      window.location.href = `http://www.secuoneindonesia.com/verify/${barcode}`;
+    }
+  }, [location]);
   
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
