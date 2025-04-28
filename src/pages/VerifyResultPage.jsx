@@ -18,6 +18,7 @@ const VerifyResultPage = () => {
       try {
         setLoading(true);
         const { data } = await axios.get(`${API_URL}/verify/${barcode}`);
+        console.log(data)
         setResult(data);
         setLoading(false);
       } catch (err) {
